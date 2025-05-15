@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>长安顺风车</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    <link rel="stylesheet" href="css/common.css" />
+    <script type="text/javascript" src="js/common.js"></script>
+    <style>
+        /* General message container styling */
+        .message-container {
+            margin: 5px 0;
+            overflow: hidden; /* Clear floats */
+        }
+
+        /* Base message bubble style */
+        .msg-bubble {
+            padding: 8px 12px; /* Adjusted padding */
+            -moz-border-radius: 10px;
+            -webkit-border-radius: 10px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            color: #333;
+            max-width: 85%; /* Use max-width for flexibility */
+            display: inline-block; /* Fit content width */
+            text-align: left;
+            white-space: pre-wrap; /* Preserve line breaks and spaces */
+            word-break: break-word; /* Break long words */
+            overflow-wrap: break-word; /* Ensure wrapping */
+            box-sizing: border-box; /* Include padding and border in width calculation */
+        }
+
+        /* Sent message specific styles */
+        .msg1-container {
+            text-align: right; /* Align container to the right */
+        }
+        .msg1 {
+            background-color: skyblue;
+            float: right; /* Float bubble to the right */
+        }
+
+        /* Received message specific styles */
+        .msg2-container {
+             text-align: left; /* Align container to the left */
+        }
+        .msg2 {
+            background-color: lightgray;
+            float: left; /* Float bubble to the left */
+        }
+
+        #history {
+            overflow: auto;
+            padding-bottom: 60px; /* Space for the input footer */
+        }
+
+        /* Remove default paragraph margin */
+        #history p {
+            margin: 0;
+        }
+
+    </style>
+    <script>
+        $(function () {
+             // Function to append message to history
+            function appendMessage(message, typeClass) {
+                 // Create container div based on message type
+                var containerClass = (typeClass === 'msg1') ? 'msg1-container' : 'msg2-container';
+                var $container = $('<div>').addClass('message-container').addClass(containerClass);
+                // Create the message bubble itself
+                var $bubble = $('<p>').addClass('msg-bubble').addClass(typeClass).text(message); // Use .text() to prevent XSS
+                $container.append($bubble);
+                $('#history').append($container);
+                // Scroll to the bottom
+                 msg_end.scrollIntoView();
+            }
+
+            // Load initial messages
+            $.post('/notice/api/list',
+                JSON.stringify({
+                    'receiverId': getParam('r'),
+                    'tripId': getParam('t'),
+                }),
+                function (d) {
+                    if (d && d.data) {
+                         d.data.forEach(e => {
+                            if (e.senderId == current_user.id) {
+                                appendMessage(e.message, 'msg1');
+                            } else {
+                                appendMessage(e.message, 'msg2');
+                            }
+                        });
+                    }
+                    msg_end.scrollIntoView();
+                }
+            ).fail(function(jqXHR, textStatus, errorThrown) {
+                 console.error("Error fetching history:", textStatus, errorThrown);
+                 // Optionally display an error message to the user
+            });
+
+             // WebSocket message handling
+             if (typeof websocket !== 'undefined' && websocket) { // Check if websocket exists
+                 websocket.onmessage = function (event) {
+                    try {
+                         var msg = JSON.parse(event.data);
+                        // Assuming msg structure { message: "..." }
+                        // And assuming messages received are always from the other party
+                        if (msg && msg.message) {
+                             appendMessage(msg.message, 'msg2');
+                        }
+                    } catch (e) {
+                        console.error("Error parsing WebSocket message:", e);
+                        // Append raw data if parsing fails, or handle error
+                        // appendMessage(event.data, 'msg2');
+                    }
+                 };
+
+                 websocket.onerror = function(error) {
+                     console.error("WebSocket Error:", error);
+                 };
+
+                 websocket.onclose = function(event) {
+                     console.log("WebSocket connection closed:", event);
+                 };
+
+             } else {
+                 console.error("WebSocket is not initialized.");
+                 // Maybe add a fallback or user notification here
+             }
+
+            // Send message on Enter key press
+            $('#send').focus().keypress(function (event) {
+                var keynum = (event.keyCode ? event.keyCode : event.which);
+                // Check for Enter key (key code 13) and non-empty, non-whitespace input
+                if (keynum == '13') {
+                     event.preventDefault(); // Prevent default Enter behavior (like form submission)
+                    var message = $(this).val().trim();
+                    if (message !== '') { // Only send if message is not empty
+                        appendMessage(message, 'msg1');
+                        // Ensure websocket is open before sending
+                         if (typeof websocket !== 'undefined' && websocket && websocket.readyState === WebSocket.OPEN) {
+                            websocket.send(JSON.stringify({
+                                'receiverId': getParam('r'),
+                                'tripId': getParam('t'),
+                                'message': message
+                            }));
+                        } else {
+                             console.error("WebSocket is not open. Cannot send message.");
+                             // Optionally inform the user message couldn't be sent
+                             $('#history').append('<p style="color:red; text-align:center;">消息发送失败，连接已断开</p>');
+                             msg_end.scrollIntoView();
+                        }
+                        $(this).val(''); // Clear input field
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+    <div data-role="page" id="pageone">
+        <div data-role="header" data-position="fixed" data-tap-toggle="false">
+            <a href="#" data-rel="back"
+                class="ui-btn ui-btn-inline ui-icon-arrow-l ui-btn-icon-notext ui-corner-all">Back</a>
+            <h1>即时消息</h1>
+        </div>
+
+        <div data-role="content">
+            <!-- History container -->
+            <div id="history">
+                <!-- Messages will be appended here by JS -->
+            </div>
+            <!-- Invisible element to scroll to -->
+            <div id="msg_end"></div>
+        </div>
+
+        <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+            <!-- Input area -->
+            <div style="margin:0px 5px;">
+                 <input type="text" id="send" placeholder="输入消息..."> <!-- Added placeholder -->
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

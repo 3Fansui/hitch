@@ -1,0 +1,15 @@
+spring:
+  redis:
+    host: 192.168.64.100
+    port: 6379
+    timeout: 1000
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: 1000
+        max-idle: 500
+        min-idle: 0
+
+baidu:
+  apikey: rBqAw63xXH3WqgkGyOmifvF7
+  secretkey: vYN7L6wRTr7bBhyvOD7XCJDmgrsfjs8B

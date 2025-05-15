@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>长安顺风车</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    <link rel="stylesheet" href="css/common.css" />
+    <script type="text/javascript" src="js/common.js"></script>
+    <style>
+        /* General message container styling - Clears floats */
+        .message-container {
+            margin: 5px 0;
+            overflow: hidden; /* Contains the floated bubble */
+            padding: 0; /* No extra padding on container */
+        }
+
+        /* Base message bubble style */
+        .msg-bubble {
+            padding: 8px 12px; /* Inner padding for text */
+            -moz-border-radius: 10px;
+            -webkit-border-radius: 10px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            color: #333;
+            max-width: 85%; /* Limit maximum width */
+            text-align: left; /* Align text inside the bubble */
+            white-space: pre-wrap;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            box-sizing: border-box;
+            /* No display:inline-block needed with float */
+            margin: 0; /* Remove default margins if any */
+        }
+
+        /* Sent message specific styles */
+        .msg1 {
+            background-color: skyblue;
+            float: right; /* Float bubble to the right edge */
+        }
+
+        /* Received message specific styles */
+        .msg2 {
+            background-color: lightgray;
+            float: left; /* Float bubble to the left edge */
+        }
+
+        #history {
+            overflow-y: auto; /* Allow vertical scrolling */
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+            padding-bottom: 70px; /* More space for the input footer + margin */
+            /* Rely on .ui-content's default padding for side spacing */
+        }
+
+    </style>
+    <script>
+        $(function () {
+            // Function to append message to history
+            function appendMessage(message, typeClass) {
+                // Create container div to help clear floats for each message
+                var $container = $('<div>').addClass('message-container');
+                // Create the message bubble itself
+                var $bubble = $('<p>').addClass('msg-bubble').addClass(typeClass).text(message); // Use .text() to prevent XSS
+                $container.append($bubble);
+                $('#history').append($container);
+                // Scroll to the bottom smoothly if possible, otherwise jump
+                // Ensure msg_end exists and is visible
+                 var msgEndElement = document.getElementById('msg_end');
+                 if (msgEndElement) {
+                    msgEndElement.scrollIntoView({ behavior: "smooth", block: "end" });
+                 } else {
+                     // Fallback: scroll the history container itself
+                     var historyElement = document.getElementById('history');
+                     if(historyElement) {
+                         historyElement.scrollTop = historyElement.scrollHeight;
+                     }
+                 }
+            }
+
+            // Load initial messages
+            $.post('/notice/api/list',
+                JSON.stringify({
+                    'receiverId': getParam('r'),
+                    'tripId': getParam('t'),
+                }),
+                function (d) {
+                    if (d && d.data) {
+                         d.data.forEach(e => {
+                            // Determine sender based on your logic, assuming current_user exists
+                            if (typeof current_user !== 'undefined' && e.senderId == current_user.id) {
+                                appendMessage(e.message, 'msg1');
+                            } else {
+                                appendMessage(e.message, 'msg2');
+                            }
+                        });
+                    }
+                     var msgEndElement = document.getElementById('msg_end');
+                     if (msgEndElement) {
+                        // Use instant scroll for initial load
+                        msgEndElement.scrollIntoView({ block: "end" });
+                     }
+                }
+            ).fail(function(jqXHR, textStatus, errorThrown) {
+                 console.error("Error fetching history:", textStatus, errorThrown);
+            });
+
+             // WebSocket message handling
+             if (typeof websocket !== 'undefined' && websocket) {
+                 websocket.onmessage = function (event) {
+                    try {
+                         var msg = JSON.parse(event.data);
+                        if (msg && msg.message) {
+                            // Assuming messages received are always from the other party (msg2)
+                            appendMessage(msg.message, 'msg2');
+                        }
+                    } catch (e) {
+                        console.error("Error parsing WebSocket message:", e);
+                    }
+                 };
+
+                 websocket.onerror = function(error) {
+                     console.error("WebSocket Error:", error);
+                 };
+
+                 websocket.onclose = function(event) {
+                     console.log("WebSocket connection closed:", event);
+                 };
+
+             } else {
+                 console.error("WebSocket is not initialized.");
+             }
+
+            // Send message on Enter key press
+            $('#send').focus().keypress(function (event) {
+                var keynum = (event.keyCode ? event.keyCode : event.which);
+                if (keynum == '13') {
+                     event.preventDefault();
+                    var message = $(this).val().trim();
+                    if (message !== '') {
+                        appendMessage(message, 'msg1');
+                         if (typeof websocket !== 'undefined' && websocket && websocket.readyState === WebSocket.OPEN) {
+                            websocket.send(JSON.stringify({
+                                'receiverId': getParam('r'),
+                                'tripId': getParam('t'),
+                                'message': message
+                            }));
+                        } else {
+                             console.error("WebSocket is not open. Cannot send message.");
+                             $('#history').append('<p style="color:red; text-align:center;">消息发送失败，连接已断开</p>');
+                                var msgEndElement = document.getElementById('msg_end');
+                                if (msgEndElement) {
+                                     msgEndElement.scrollIntoView({ behavior: "smooth", block: "end" });
+                                }
+                        }
+                        $(this).val('');
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+    <div data-role="page" id="pageone">
+        <div data-role="header" data-position="fixed" data-tap-toggle="false">
+            <a href="#" data-rel="back"
+                class="ui-btn ui-btn-inline ui-icon-arrow-l ui-btn-icon-notext ui-corner-all">Back</a>
+            <h1>即时消息</h1>
+        </div>
+
+        <div data-role="content">
+            <!-- History container -->
+            <div id="history">
+                <!-- Messages will be appended here by JS -->
+            </div>
+             <!-- Invisible element to scroll to -->
+             <div id="msg_end" style="height: 1px;"></div> <!-- Needs some height to be reliably scrolled to -->
+        </div>
+
+        <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+             <!-- Input area - relies on default footer padding for alignment -->
+            <div style="padding: 5px;"> <!-- Add slight padding around input within footer -->
+                 <input type="text" id="send" placeholder="输入消息...">
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

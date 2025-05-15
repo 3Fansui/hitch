@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>长安顺风车</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css">
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    <link rel="stylesheet" href="css/common.css" />
+    <script type="text/javascript" src="js/common.js"></script>
+    <style>
+        /* 核心居中布局 */
+        .ui-content {
+            max-width: 600px; /* 控制聊天区域最大宽度 */
+            margin: 0 auto !important; /* 强制居中 */
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+        }
+        
+        /* 底部输入栏居中 */
+        .ui-footer .ui-navbar {
+            max-width: 600px;
+            margin: 0 auto !important;
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+        }
+        
+        /* 消息容器 */
+        .message-container {
+            clear: both;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        /* 消息气泡基础样式 */
+        .msg-bubble {
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 80%;
+            text-align: left;
+            white-space: pre-wrap;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            box-sizing: border-box;
+        }
+
+        /* 发送消息样式 */
+        .msg1 {
+            background-color: skyblue;
+            float: right;
+            border-bottom-right-radius: 5px;
+        }
+
+        /* 接收消息样式 */
+        .msg2 {
+            background-color: lightgray;
+            float: left;
+            border-bottom-left-radius: 5px;
+        }
+
+        #history {
+            overflow-y: auto;
+            padding-bottom: 70px;
+        }
+        
+        /* 输入框区域样式 */
+        #send-container {
+            width: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        
+        #send {
+            width: 100%;
+            box-sizing: border-box;
+            border-radius: 20px;
+            padding: 8px 15px;
+        }
+        
+        /* 确保页脚也居中 */
+        .ui-footer {
+            text-align: center;
+        }
+        
+        /* 确保header也居中 */
+        .ui-header {
+            max-width: 600px;
+            margin: 0 auto !important;
+        }
+    </style>
+    <script>
+        $(function () {
+            // 添加消息到历史记录
+            function appendMessage(message, typeClass) {
+                var $container = $('<div>').addClass('message-container');
+                var $bubble = $('<div>').addClass('msg-bubble').addClass(typeClass).text(message);
+                $container.append($bubble);
+                $('#history').append($container);
+                
+                scrollToBottom();
+            }
+            
+            // 滚动到底部
+            function scrollToBottom() {
+                var msgEndElement = document.getElementById('msg_end');
+                if (msgEndElement) {
+                    msgEndElement.scrollIntoView({ behavior: "smooth", block: "end" });
+                }
+            }
+
+            // 加载初始消息
+            $.post('/notice/api/list',
+                JSON.stringify({
+                    'receiverId': getParam('r'),
+                    'tripId': getParam('t'),
+                }),
+                function (d) {
+                    if (d && d.data && d.data.length > 0) {
+                        d.data.forEach(e => {
+                            if (typeof current_user !== 'undefined' && e.senderId == current_user.id) {
+                                appendMessage(e.message, 'msg1');
+                            } else {
+                                appendMessage(e.message, 'msg2');
+                            }
+                        });
+                    }
+                    scrollToBottom();
+                }
+            ).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("获取历史消息失败:", textStatus, errorThrown);
+            });
+
+            // WebSocket消息处理
+            if (typeof websocket !== 'undefined' && websocket) {
+                websocket.onmessage = function (event) {
+                    try {
+                        var msg = JSON.parse(event.data);
+                        if (msg && msg.message) {
+                            appendMessage(msg.message, 'msg2');
+                        }
+                    } catch (e) {
+                        console.error("解析WebSocket消息出错:", e);
+                    }
+                };
+            }
+
+            // 发送消息处理
+            $('#send').focus().keypress(function (event) {
+                var keynum = (event.keyCode ? event.keyCode : event.which);
+                if (keynum == '13') {
+                    event.preventDefault();
+                    var message = $(this).val().trim();
+                    if (message !== '') {
+                        appendMessage(message, 'msg1');
+                        if (typeof websocket !== 'undefined' && websocket && websocket.readyState === WebSocket.OPEN) {
+                            websocket.send(JSON.stringify({
+                                'receiverId': getParam('r'),
+                                'tripId': getParam('t'),
+                                'message': message
+                            }));
+                        } else {
+                            console.error("WebSocket未连接，无法发送消息");
+                            $('#history').append('<div style="text-align:center; color:red; margin:10px 0;">消息发送失败，连接已断开</div>');
+                            scrollToBottom();
+                        }
+                        $(this).val('');
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div data-role="page" id="pageone">
+        <div data-role="header" data-position="fixed" data-tap-toggle="false">
+            <a href="#" data-rel="back"
+                class="ui-btn ui-btn-inline ui-icon-arrow-l ui-btn-icon-notext ui-corner-all">返回</a>
+            <h1>即时消息</h1>
+        </div>
+
+        <div data-role="content">
+            <div id="history">
+                <!-- 消息会通过JS添加到这里 -->
+            </div>
+            <div id="msg_end" style="height: 1px;"></div>
+        </div>
+
+        <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+            <div id="send-container">
+                <input type="text" id="send" placeholder="输入消息...">
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
