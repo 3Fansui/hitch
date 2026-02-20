@@ -143,24 +143,27 @@ function getUser() {
         var token = localStorage.getItem('SESSION_TOKEN_KEY');
         if (current_user) return current_user;
 
-        // 增加统一的全局拦截
         var isHome = location.href.indexOf('/user.html') !== -1;
+        // 动态计算登录地址以避免404(适配不同部署级路径)
+        var loginUrl = location.pathname.indexOf('/web/') > -1 ? location.pathname.split('/web/')[0] + '/web/login.html' : '../login.html';
+
         if (!token || token === 'null' || token === 'undefined') {
             if (isHome) {
-                // 未登录首页强拦截：仅能看图，点击所有按钮弹窗并阻止
-                $(function () {
-                    $('a, button, input').off('click tap').on('click tap', function (e) {
-                        showMsg('请先登录即可体验功能');
-                        setTimeout(function () { location.href = '/web/login.html'; }, 1500);
-                        e.preventDefault();
-                        e.stopPropagation();
-                        return false;
-                    });
+                // 未登录首页强拦截：采用最强文档级事件代理阻止冒泡
+                $(document).off('click tap', 'a, button, input').on('click tap', 'a, button, input', function (e) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    showMsg('请先登录即可体验功能');
+                    setTimeout(function () {
+                        // JQM 跳转机制
+                        location.href = loginUrl;
+                    }, 1500);
+                    return false;
                 });
                 return null; // 拦截发送
             } else {
-                // 非首页、非login的受保护页面，直接瞬间跳转，严禁发起无用请求导致弹窗报错
-                location.href = '/web/login.html';
+                // 非首页、非login的受保护页面，直接瞬间跳转
+                location.href = loginUrl;
                 return null;
             }
         }
