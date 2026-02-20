@@ -142,21 +142,27 @@ function getUser() {
     if (location.href.indexOf('login.html') == -1) {
         var token = localStorage.getItem('SESSION_TOKEN_KEY');
         if (current_user) return current_user;
-        
+
         // 增加统一的全局拦截
         var isHome = location.href.indexOf('/user.html') !== -1;
-        if ((!token || token === 'null' || token === 'undefined') && isHome) {
-            // 未登录首页强拦截：仅能看图，点击所有按钮弹窗并阻止
-            $(function() {
-                $('a, button, input').off('click tap').on('click tap', function(e) {
-                    showMsg('请求失败或请先登录即可体验功能');
-                    setTimeout(function(){ location.href = '../login.html'; }, 1500);
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
+        if (!token || token === 'null' || token === 'undefined') {
+            if (isHome) {
+                // 未登录首页强拦截：仅能看图，点击所有按钮弹窗并阻止
+                $(function () {
+                    $('a, button, input').off('click tap').on('click tap', function (e) {
+                        showMsg('请先登录即可体验功能');
+                        setTimeout(function () { location.href = '/web/login.html'; }, 1500);
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    });
                 });
-            });
-            return null; // 这里拦截了ajax发送直接返回，就不会报错401了
+                return null; // 拦截发送
+            } else {
+                // 非首页、非login的受保护页面，直接瞬间跳转，严禁发起无用请求导致弹窗报错
+                location.href = '/web/login.html';
+                return null;
+            }
         }
 
         $.ajax({
@@ -178,11 +184,11 @@ function getUser() {
                     //判断当前浏览器是否支持WebSocket
                     if ('WebSocket' in window) {
                         //截取浏览器地址栏host和端口
-                        var l=l = window.location.href;
-                        var r=new RegExp('http://(.+)?/web/.*');
-                        var h=l.match(r)[1];
+                        var l = l = window.location.href;
+                        var r = new RegExp('http://(.+)?/web/.*');
+                        var h = l.match(r)[1];
                         //拼接ws的地址，走nginx代理转发
-                        websocket = new WebSocket('ws://'+h+'/notice/ws/socket?SESSION_TOKEN_KEY='+token);
+                        websocket = new WebSocket('ws://' + h + '/notice/ws/socket?SESSION_TOKEN_KEY=' + token);
                     } else {
                         alert('Not support websocket')
                     }
@@ -193,16 +199,16 @@ function getUser() {
                         var msgStr = localStorage.getItem('_msg');
                         var msg = [];
                         if (msgStr) {
-                            msg = JSON.parse(msgStr) ;
+                            msg = JSON.parse(msgStr);
                         }
                         // 压缩消息，去掉没用的属性
-                        delete(d['read']);
-                        delete(d['receiverUseralias']);
-                        delete(d['receiverId']);
-                        delete(d['retripIdad']);
-                        delete(d['vO']);
-                        delete(d['tripId']);
-                        delete(d['createdTime']);
+                        delete (d['read']);
+                        delete (d['receiverUseralias']);
+                        delete (d['receiverId']);
+                        delete (d['retripIdad']);
+                        delete (d['vO']);
+                        delete (d['tripId']);
+                        delete (d['createdTime']);
                         msg.push(d);
                         localStorage.setItem('_msg', JSON.stringify(msg));
                     }
@@ -210,10 +216,10 @@ function getUser() {
                 } else {
                     var isHome = location.href.indexOf('/user.html') !== -1;
                     if (isHome) {
-                        $(function() {
-                            $('a, button, input').off('click tap').on('click tap', function(e) {
+                        $(function () {
+                            $('a, button, input').off('click tap').on('click tap', function (e) {
                                 showMsg('请先登录即可体验功能');
-                                setTimeout(function(){ location.href = '../login.html'; }, 1500);
+                                setTimeout(function () { location.href = '../login.html'; }, 1500);
                                 e.preventDefault();
                                 e.stopPropagation();
                                 return false;

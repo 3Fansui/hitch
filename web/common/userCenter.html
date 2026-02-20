@@ -58,54 +58,58 @@
         
     </div>
 
-    <div data-role="page" id="pageone">
+    <div data-role="page" id="pageone" class="bg-img">
         <div data-role="header" data-position="fixed" data-tap-toggle="false">
             <h1>个人中心</h1>
         </div>
-        <ul data-role="listview" data-inset="true" id="defaultpanel" style="margin:15px;">
-            <li>
-                <a href="#" class="ui-btn"
-                    style="border-top-left-radius: 5px; border-top-right-radius: 5px; background-color:#ddd;">
-                    <img class="person-img" src=""
-                        style="width:70px;height:70px;margin-top:25px;margin-left:10px;">
-                    <h2 id="driverName" id="useralias"></h2>
-                    <p></p>
-                    <p><span>实名认证：</span> <span style="color:darkgoldenrod" id="valid">未完成</span></p>
-                    <p></p>
-                    <p><span>车主认证：</span> <span style="color:darkgoldenrod" id="driver">已完成</span></p>
-                </a>
-            </li>
-            <li>
-                <a data-ajax="false" href="javascript:toUrl('alterPwd.html')">修改密码</a>
-            </li>
-            <li>
-                <a data-ajax="false" href="javascript:toUrl('alterPhoto.html')">修改头像</a>
-            </li>
-            <li>
-                <a data-ajax="false" href="javascript:toUrl('alterPaycode.html')">收款码</a>
-            </li>
-            <li>
-                <a data-ajax="false" href="javascript:toUrl('userEdit.html')">完善资料</a>
-            </li>
-            <li>
-                <a data-ajax="false" href="javascript:toUrl('carInfo.html')">车辆信息</a>
-            </li>
-            <li>
-                <a data-ajax="false" href="javascript:toUrl('userVerify.html')">实名认证</a>
-            </li>
-            <li>
-                <a data-ajax="false" href="javascript:toUrl('carVerify.html')">车主认证</a>
-            </li>
-            <li>
-                <a data-ajax="false" href="javascript:toUrl('accountInfo.html')">行程统计</a>
-            </li>
-            <li>
-                <a data-ajax="false" href="javascript:toUrl('userMsg.html')">我的消息</a>
-            </li>
-            <li>
-                <a data-ajax="false" href="javascript:logout();">退出登录</a>
-            </li>
-        </ul>
+        
+        <div style="margin-top:60px;"></div>
+        <!-- 炫酷独立头像资料卡片 -->
+        <div class="ui-content ui-content2" style="text-align:center; padding: 40px 20px !important; margin-bottom: 20px !important; border-top: 4px solid var(--primary-color);">
+            <img class="person-img" src="" onerror="this.src='/web/img/default-header.jpg'" style="width:90px;height:90px;border:4px solid white;box-shadow: 0 8px 24px rgba(0,0,0,0.15); object-fit: cover;">
+            <h2 id="driverName" style="margin-top:15px; font-weight:700; font-size: 22px;">--</h2>
+            <div style="display:flex; justify-content:center; gap: 15px; margin-top:10px;">
+                <span style="background:rgba(26,115,232,0.1); padding: 5px 12px; border-radius: 20px; font-size:12px; color:var(--primary-color); font-weight:600;">实名认证: <strong id="valid" style="color:#f39c12">未完成</strong></span>
+                <span style="background:rgba(26,115,232,0.1); padding: 5px 12px; border-radius: 20px; font-size:12px; color:var(--primary-color); font-weight:600;">车主认证: <strong id="driver" style="color:#f39c12">未完成</strong></span>
+            </div>
+        </div>
+
+        <!-- 圆角设置菜单 -->
+        <div class="ui-content2" style="padding: 10px !important; margin-bottom: 80px !important;">
+            <ul data-role="listview" data-inset="true" id="defaultpanel" style="margin:0; box-shadow: none;">
+                <li>
+                    <a data-ajax="false" href="javascript:toUrl('alterPwd.html')">🔒 修改密码</a>
+                </li>
+                <li>
+                    <a data-ajax="false" href="javascript:toUrl('alterPhoto.html')">📸 修改头像</a>
+                </li>
+                <li>
+                    <a data-ajax="false" href="javascript:toUrl('alterPaycode.html')">💰 收款码配置</a>
+                </li>
+                <li>
+                    <a data-ajax="false" href="javascript:toUrl('userEdit.html')">✍️ 完善基本资料</a>
+                </li>
+                <li>
+                    <a data-ajax="false" href="javascript:toUrl('carInfo.html')">🚗 绑定车辆信息</a>
+                </li>
+                <li>
+                    <a data-ajax="false" href="javascript:toUrl('userVerify.html')">🪪 实名认证流程</a>
+                </li>
+                <li>
+                    <a data-ajax="false" href="javascript:toUrl('carVerify.html')">🏅 车主认证流程</a>
+                </li>
+                <li>
+                    <a data-ajax="false" href="javascript:toUrl('accountInfo.html')">📊 历史行程统计</a>
+                </li>
+                <li>
+                    <a data-ajax="false" href="javascript:toUrl('userMsg.html')">💬 查看我的消息</a>
+                </li>
+                <li data-icon="delete" data-theme="b">
+                    <a data-ajax="false" style="color: #e74c3c !important; font-weight: bold;" href="javascript:logout();">🛡️ 退出当前登录</a>
+                </li>
+            </ul>
+        </div>
+        
         <div data-role="footer" data-position="fixed" data-tap-toggle="false">
             <div data-role="navbar" style="margin: 0;" id="footerLink">
                 <ul>
