@@ -21,7 +21,7 @@
                     if (d.code == 200) {
                         showMsg('登录成功');
                         localStorage.setItem('SESSION_TOKEN_KEY', d.data[0].token);
-                        localStorage.setItem('current_role',0); //默认切换
+                        localStorage.setItem('current_role', 0); //默认切换
                         if ($('#isDriver').val() == '1') {
                             toUrl('driver/user.html', 1000);
                         } else {
@@ -64,95 +64,78 @@
 </head>
 
 <body>
+    <div data-role="page" id="pageone" class="fullscreen-bg">
+        <div data-role="main" class="ui-content" style="padding: 0;">
+            <!-- Brand Logo / Title Area -->
+            <div style="text-align: center; margin-bottom: 40px; margin-top: -60px;">
+                <h1
+                    style="color: white; font-size: 32px; font-weight: 800; letter-spacing: 2px; text-shadow: 0 4px 15px rgba(0,0,0,0.6); margin: 0;">
+                    同城顺风车</h1>
+                <p style="color: rgba(255,255,255,0.7); font-size: 14px; margin-top: 8px;">畅享每一次同城出行</p>
+            </div>
 
-
-    <div data-role="page" id="pageone" class="bg-img">
-        <div data-role="header" data-position="fixed" data-tap-toggle="false">
-            <h1>登录</h1>
-        </div>
-        <div style="margin-top:60px;"></div>
-        <div data-role="main" class="ui-content ui-content2 ui-shadow-inset" style="background-color: white">
-            <form id="loginForm">
-
-                <div data-role="content">
-                    用户名：
-                    <input name="username" value="" id="u" />
-                    密码：
-                    <input name="password" value="" id="p" type="password">
-                    <!-- <br>切换：
-                    <select id="isDriver" data-role="flipswitch" data-mini="true">
-                        <option value="0">否</option>
-                        <option value="1">是</option>
-                    </select> -->
-                    <br><br>
-                    <button type="button" class="ui-btn-active" id="go">登录</button>
-                    <div data-role="content" style="text-align: right;">
-                        <a href="#pagetwo" style="text-decoration: none;">还没有账号？去注册&gt;&gt;</a>
+            <!-- Glassmorphism Login Form -->
+            <div class="glass-login-card">
+                <form id="loginForm">
+                    <div style="margin-bottom: 25px;">
+                        <input name="username" id="u" class="glass-input" placeholder="请输入您的账号" autocomplete="off" />
                     </div>
-                </div>
-            </form>
+                    <div style="margin-bottom: 35px;">
+                        <input name="password" id="p" type="password" class="glass-input" placeholder="请输入密码" />
+                    </div>
+                    <button type="button" class="ui-btn-active" id="go"
+                        style="padding: 14px !important; font-size: 18px !important; border-radius: 50px !important;">开
+                        启 行 程</button>
 
-        </div>
-
-        <div style="margin-bottom:75px;"></div>
-        <div data-role="footer" data-position="fixed" data-tap-toggle="false">
-            <div data-role="navbar" style="margin: 0;">
-                <ul>
-                    <li><a href="javascript:location.href='user/user.html'" data-icon="home"
-                            class="ui-btn-active">首页</a>
-                    </li>
-                    <li><a href="javascript:location.href='user/trip.html'" data-icon="grid">我的行程</a></li>
-                    <li><a href="javascript:location.href='user/order.html'" data-icon="bullets">我的订单</a></li>
-                    <li><a href="javascript:location.href='common/userCenter.html'" data-icon="user">个人中心</a></li>
-                </ul>
+                    <div style="text-align: center; margin-top: 25px;">
+                        <a href="#pagetwo"
+                            style="color: rgba(255,255,255,0.8); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.3s;"
+                            onmouseover="this.style.color='white'"
+                            onmouseout="this.style.color='rgba(255,255,255,0.8)'">新面孔？去注册账号 ⟶</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-
-
-    <div data-role="page" id="pagetwo" class="bg-img">
-        <div data-role="header">
-            <h1>注册</h1>
-        </div>
-
-        <div style="margin-top:60px;"></div>
-        <div data-role="main" class="ui-content ui-content2 ui-shadow-inset" style="background-color: white">
-            <form id="regForm">
-                
-                <div data-role="content ">
-                    用户名：
-                    <input name="username" id="username" />
-                    手机号：
-                    <input name="phone" id="phone" />
-                    密码：
-                    <input name="password" id="password" type="password">
-                    确认密码：
-                    <input id="password2" type="password">
-                    <br>
-                    <button type="button" class="ui-btn-active" id="reg">注册</button>
-                </div>
-            </form>
-            <div data-role="content" style="text-align: right;">
-                <a href="#pageone" style="text-decoration: none;">已有账号？去登录&gt;&gt;</a>
+    <!-- Register Page follows similar immersive styling -->
+    <div data-role="page" id="pagetwo" class="fullscreen-bg">
+        <div data-role="main" class="ui-content" style="padding: 0;">
+            <div style="text-align: center; margin-bottom: 30px; margin-top: -30px;">
+                <h1
+                    style="color: white; font-size: 28px; font-weight: 700; text-shadow: 0 4px 15px rgba(0,0,0,0.6); margin: 0;">
+                    创建新账号</h1>
+                <p style="color: rgba(255,255,255,0.7); font-size: 14px; margin-top: 8px;">加入同城顺风车网络</p>
             </div>
-        </div>
 
-        <div style="margin-bottom:75px;"></div>
-        <div data-role="footer" data-position="fixed" data-tap-toggle="false">
-            <div data-role="navbar" style="margin: 0;">
-                <ul>
-                    <li><a href="javascript:location.href='user/user.html'" data-icon="home"
-                            class="ui-btn-active">首页</a>
-                    </li>
-                    <li><a href="javascript:location.href='user/trip.html'" data-icon="grid">我的行程</a></li>
-                    <li><a href="javascript:location.href='user/order.html'" data-icon="bullets">我的订单</a></li>
-                    <li><a href="javascript:location.href='common/userCenter.html'" data-icon="user">个人中心</a></li>
-                </ul>
+            <div class="glass-login-card">
+                <form id="regForm">
+                    <div style="margin-bottom: 15px;">
+                        <input name="username" id="username" class="glass-input" placeholder="设置用户名"
+                            autocomplete="off" />
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <input name="phone" id="phone" class="glass-input" placeholder="输入手机号" type="tel" />
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <input name="password" id="password" type="password" class="glass-input" placeholder="设置登录密码" />
+                    </div>
+                    <div style="margin-bottom: 30px;">
+                        <input id="password2" type="password" class="glass-input" placeholder="再次确认密码" />
+                    </div>
+                    <button type="button" class="ui-btn-active" id="reg"
+                        style="padding: 14px !important; font-size: 18px !important; border-radius: 50px !important; background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%) !important;">注
+                        册</button>
+                </form>
+                <div style="text-align: center; margin-top: 25px;">
+                    <a href="#pageone"
+                        style="color: rgba(255,255,255,0.8); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.3s;"
+                        onmouseover="this.style.color='white'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">⟵
+                        已有账号？去登录</a>
+                </div>
             </div>
         </div>
     </div>
-
 </body>
 
 </html>

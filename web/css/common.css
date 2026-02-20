@@ -7,8 +7,14 @@
     --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
     --glass-border: 1px solid rgba(255, 255, 255, 0.4);
 }
-* { touch-action: pan-y; box-sizing: border-box; }
-html, body {
+
+* {
+    touch-action: pan-y;
+    box-sizing: border-box;
+}
+
+html,
+body {
     padding: 0;
     margin: 0;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -16,8 +22,13 @@ html, body {
     background-color: #f5f7fa !important;
 }
 
-h1,h2,h3,h4,h5,p{
-    margin-top:5px;
+h1,
+h2,
+h3,
+h4,
+h5,
+p {
+    margin-top: 5px;
     margin-bottom: 10px;
     font-weight: 500;
 }
@@ -39,21 +50,24 @@ h1,h2,h3,h4,h5,p{
     transform: translateY(-2px);
 }
 
-.corner{
+.corner {
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
     border-radius: 10px;
 }
 
-.bg-img{
-    background-image:url('../img/bg.png');
-    background-repeat:no-repeat;
-    background-size: 100% 250px; 
+.bg-img {
+    background-image: url('../img/bg.png');
+    background-repeat: no-repeat;
+    background-size: 100% 250px;
     background-position: top center;
 }
 
 /* JQM Overrides for modern look */
-.ui-btn-active, .ui-btn-active:visited, .ui-btn-active:hover, .ui-btn-active:active {
+.ui-btn-active,
+.ui-btn-active:visited,
+.ui-btn-active:hover,
+.ui-btn-active:active {
     background: var(--primary-gradient) !important;
     border-color: transparent !important;
     text-shadow: none !important;
@@ -71,8 +85,8 @@ h1,h2,h3,h4,h5,p{
 .ui-header {
     background: rgba(255, 255, 255, 0.85) !important;
     backdrop-filter: blur(12px) !important;
-    border-bottom: 1px solid rgba(0,0,0,0.05) !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.04) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
     color: var(--text-color) !important;
 }
 
@@ -86,7 +100,7 @@ h1,h2,h3,h4,h5,p{
 .ui-footer {
     background: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(15px) !important;
-    border-top: 1px solid rgba(0,0,0,0.05) !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
 }
 
 .ui-navbar ul li a {
@@ -104,27 +118,120 @@ h1,h2,h3,h4,h5,p{
     font-weight: 700 !important;
 }
 
-.ui-input-text, .ui-input-search {
+.ui-input-text,
+.ui-input-search {
     border-radius: 12px !important;
-    border: 1px solid rgba(0,0,0,0.08) !important;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.02) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.02) !important;
     background: rgba(255, 255, 255, 0.95) !important;
     padding-left: 10px !important;
     transition: border-color 0.3s;
 }
 
-.person-img{
+.person-img {
     -moz-border-radius: 50%;
     -webkit-border-radius: 50%;
-    border-radius:50%;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 #_msg_btn {
     border-radius: 20px !important;
-    background: rgba(0,0,0,0.8) !important;
+    background: rgba(0, 0, 0, 0.8) !important;
     backdrop-filter: blur(10px) !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
     font-weight: 600 !important;
-    border: 1px solid rgba(255,255,255,0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Phase 3: Immersive Login & Grid UI */
+.fullscreen-bg {
+    background-image: url('../img/bg_full.png');
+    background-size: cover;
+    background-position: center bottom;
+    background-attachment: fixed;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.glass-login-card {
+    background: rgba(15, 20, 35, 0.65) !important;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 24px !important;
+    padding: 35px 25px !important;
+    margin: 0 20px !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
+    color: white;
+}
+
+.glass-input {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: none !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 8px 8px 0 0 !important;
+    color: white !important;
+    text-shadow: none !important;
+    font-size: 16px !important;
+    padding: 12px 15px !important;
+    box-shadow: none !important;
+}
+
+.glass-input:focus {
+    border-bottom: 2px solid var(--primary-color) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+}
+
+.ui-page-theme-a .glass-input {
+    color: white !important;
+}
+
+.glass-input::-webkit-input-placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Nine-Grid User Center */
+.grid-menu {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    padding: 15px;
+    margin-bottom: 80px;
+}
+
+.grid-item {
+    background: var(--surface-color);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: var(--glass-border);
+    border-radius: 16px;
+    padding: 20px 10px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+    text-decoration: none !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.grid-item:active {
+    transform: scale(0.92);
+    background: rgba(26, 115, 232, 0.1);
+}
+
+.grid-emoji {
+    font-size: 28px;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+.grid-text {
+    font-size: 13px;
+    color: var(--text-color);
+    font-weight: 600;
 }

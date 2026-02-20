@@ -28,21 +28,22 @@
             height: 100%;
             max-height: 180px;
         }
+
         .ui-icon-carat-r {
-            line-height:20px;
+            line-height: 20px;
         }
     </style>
     <script>
         $(function () {
 
-            $('.person-img').attr('src',current_user.avatar);
+            $('.person-img').attr('src', current_user.avatar);
             $('#driverName').text((current_user.useralias == '') ? current_user.username : current_user.useralias);
             $('#valid').text((current_user.status == 1) ? '已完成' : '未完成');
             $('#driver').text((current_user.role == 1) ? '已完成' : '未完成');
 
             var roleName = (localStorage.getItem('current_role') == '0' ? 'user' : 'driver');
-            $('.role').each(function(){
-                $(this).attr('href','../'+roleName+'/'+$(this).attr('href'));
+            $('.role').each(function () {
+                $(this).attr('href', '../' + roleName + '/' + $(this).attr('href'));
             });
             $('li').removeClass('ui-first-child');
         })
@@ -55,61 +56,78 @@
 
 <body>
     <div id="template" style="display: none;">
-        
+
     </div>
 
     <div data-role="page" id="pageone" class="bg-img">
         <div data-role="header" data-position="fixed" data-tap-toggle="false">
             <h1>个人中心</h1>
         </div>
-        
+
         <div style="margin-top:60px;"></div>
         <!-- 炫酷独立头像资料卡片 -->
-        <div class="ui-content ui-content2" style="text-align:center; padding: 40px 20px !important; margin-bottom: 20px !important; border-top: 4px solid var(--primary-color);">
-            <img class="person-img" src="" onerror="this.src='/web/img/default-header.jpg'" style="width:90px;height:90px;border:4px solid white;box-shadow: 0 8px 24px rgba(0,0,0,0.15); object-fit: cover;">
+        <div class="ui-content ui-content2"
+            style="text-align:center; padding: 40px 20px !important; margin-bottom: 20px !important; border-top: 4px solid var(--primary-color);">
+            <img class="person-img" src="" onerror="this.src='/web/img/default-header.jpg'"
+                style="width:90px;height:90px;border:4px solid white;box-shadow: 0 8px 24px rgba(0,0,0,0.15); object-fit: cover;">
             <h2 id="driverName" style="margin-top:15px; font-weight:700; font-size: 22px;">--</h2>
             <div style="display:flex; justify-content:center; gap: 15px; margin-top:10px;">
-                <span style="background:rgba(26,115,232,0.1); padding: 5px 12px; border-radius: 20px; font-size:12px; color:var(--primary-color); font-weight:600;">实名认证: <strong id="valid" style="color:#f39c12">未完成</strong></span>
-                <span style="background:rgba(26,115,232,0.1); padding: 5px 12px; border-radius: 20px; font-size:12px; color:var(--primary-color); font-weight:600;">车主认证: <strong id="driver" style="color:#f39c12">未完成</strong></span>
+                <span
+                    style="background:rgba(26,115,232,0.1); padding: 5px 12px; border-radius: 20px; font-size:12px; color:var(--primary-color); font-weight:600;">实名认证:
+                    <strong id="valid" style="color:#f39c12">未完成</strong></span>
+                <span
+                    style="background:rgba(26,115,232,0.1); padding: 5px 12px; border-radius: 20px; font-size:12px; color:var(--primary-color); font-weight:600;">车主认证:
+                    <strong id="driver" style="color:#f39c12">未完成</strong></span>
             </div>
         </div>
 
-        <!-- 圆角设置菜单 -->
-        <div class="ui-content2" style="padding: 10px !important; margin-bottom: 80px !important;">
-            <ul data-role="listview" data-inset="true" id="defaultpanel" style="margin:0; box-shadow: none;">
-                <li>
-                    <a data-ajax="false" href="javascript:toUrl('alterPwd.html')">🔒 修改密码</a>
-                </li>
-                <li>
-                    <a data-ajax="false" href="javascript:toUrl('alterPhoto.html')">📸 修改头像</a>
-                </li>
-                <li>
-                    <a data-ajax="false" href="javascript:toUrl('alterPaycode.html')">💰 收款码配置</a>
-                </li>
-                <li>
-                    <a data-ajax="false" href="javascript:toUrl('userEdit.html')">✍️ 完善基本资料</a>
-                </li>
-                <li>
-                    <a data-ajax="false" href="javascript:toUrl('carInfo.html')">🚗 绑定车辆信息</a>
-                </li>
-                <li>
-                    <a data-ajax="false" href="javascript:toUrl('userVerify.html')">🪪 实名认证流程</a>
-                </li>
-                <li>
-                    <a data-ajax="false" href="javascript:toUrl('carVerify.html')">🏅 车主认证流程</a>
-                </li>
-                <li>
-                    <a data-ajax="false" href="javascript:toUrl('accountInfo.html')">📊 历史行程统计</a>
-                </li>
-                <li>
-                    <a data-ajax="false" href="javascript:toUrl('userMsg.html')">💬 查看我的消息</a>
-                </li>
-                <li data-icon="delete" data-theme="b">
-                    <a data-ajax="false" style="color: #e74c3c !important; font-weight: bold;" href="javascript:logout();">🛡️ 退出当前登录</a>
-                </li>
-            </ul>
+        <!-- 九宫格功能菜单 (CSS Grid) -->
+        <div class="grid-menu">
+            <a href="javascript:toUrl('alterPwd.html')" class="grid-item">
+                <span class="grid-emoji">🔒</span>
+                <span class="grid-text">修改密码</span>
+            </a>
+            <a href="javascript:toUrl('alterPhoto.html')" class="grid-item">
+                <span class="grid-emoji">📸</span>
+                <span class="grid-text">修改头像</span>
+            </a>
+            <a href="javascript:toUrl('alterPaycode.html')" class="grid-item">
+                <span class="grid-emoji">💰</span>
+                <span class="grid-text">收款配置</span>
+            </a>
+            <a href="javascript:toUrl('userEdit.html')" class="grid-item">
+                <span class="grid-emoji">✍️</span>
+                <span class="grid-text">完善资料</span>
+            </a>
+            <a href="javascript:toUrl('carInfo.html')" class="grid-item">
+                <span class="grid-emoji">🚗</span>
+                <span class="grid-text">车辆信息</span>
+            </a>
+            <a href="javascript:toUrl('userVerify.html')" class="grid-item">
+                <span class="grid-emoji">🪪</span>
+                <span class="grid-text">实名认证</span>
+            </a>
+            <a href="javascript:toUrl('carVerify.html')" class="grid-item">
+                <span class="grid-emoji">🏅</span>
+                <span class="grid-text">车主认证</span>
+            </a>
+            <a href="javascript:toUrl('accountInfo.html')" class="grid-item">
+                <span class="grid-emoji">📊</span>
+                <span class="grid-text">行程统计</span>
+            </a>
+            <a href="javascript:toUrl('userMsg.html')" class="grid-item">
+                <span class="grid-emoji">💬</span>
+                <span class="grid-text">我的消息</span>
+            </a>
         </div>
-        
+
+        <!-- 全局退出大按钮 -->
+        <div style="padding: 0 15px; margin-bottom: 80px;">
+            <a href="javascript:logout();" class="ui-btn"
+                style="background: rgba(231, 76, 60, 0.1) !important; color: #e74c3c !important; border: 1px solid rgba(231, 76, 60, 0.3) !important; border-radius: 16px !important; font-weight: 700; padding: 15px !important; box-shadow: none !important;">🛡️
+                退出当前登录</a>
+        </div>
+
         <div data-role="footer" data-position="fixed" data-tap-toggle="false">
             <div data-role="navbar" style="margin: 0;" id="footerLink">
                 <ul>
