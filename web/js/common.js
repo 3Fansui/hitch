@@ -142,6 +142,23 @@ function getUser() {
     if (location.href.indexOf('login.html') == -1) {
         var token = localStorage.getItem('SESSION_TOKEN_KEY');
         if (current_user) return current_user;
+        
+        // 增加统一的全局拦截
+        var isHome = location.href.indexOf('/user.html') !== -1;
+        if ((!token || token === 'null' || token === 'undefined') && isHome) {
+            // 未登录首页强拦截：仅能看图，点击所有按钮弹窗并阻止
+            $(function() {
+                $('a, button, input').off('click tap').on('click tap', function(e) {
+                    showMsg('请求失败或请先登录即可体验功能');
+                    setTimeout(function(){ location.href = '../login.html'; }, 1500);
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                });
+            });
+            return null; // 这里拦截了ajax发送直接返回，就不会报错401了
+        }
+
         $.ajax({
             type: "POST",
             url: "/account/api/verifyToken",
@@ -191,8 +208,21 @@ function getUser() {
                     }
 
                 } else {
-                    showMsg(data.message);
-                    toUrl('/web/login.html', 1000);
+                    var isHome = location.href.indexOf('/user.html') !== -1;
+                    if (isHome) {
+                        $(function() {
+                            $('a, button, input').off('click tap').on('click tap', function(e) {
+                                showMsg('请先登录即可体验功能');
+                                setTimeout(function(){ location.href = '../login.html'; }, 1500);
+                                e.preventDefault();
+                                e.stopPropagation();
+                                return false;
+                            });
+                        });
+                    } else {
+                        showMsg(data.message);
+                        toUrl('/web/login.html', 1000);
+                    }
                 }
 
             },

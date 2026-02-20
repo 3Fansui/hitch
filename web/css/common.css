@@ -1,35 +1,130 @@
-* { touch-action: pan-y; }
-.ui-content2 {
-    border: 1px solid #aaa;
-    margin:10px 15px;
-    padding: 20px;
-    background-color: #405f471f;
-    -moz-border-radius: 10px;
-    -webkit-border-radius: 10px;
-    border-radius: 10px;
+:root {
+    --primary-color: #1a73e8;
+    --primary-gradient: linear-gradient(135deg, #4aa0ff 0%, #1a73e8 100%);
+    --surface-color: rgba(255, 255, 255, 0.85);
+    --text-color: #2c3e50;
+    --border-radius: 16px;
+    --box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.4);
 }
+* { touch-action: pan-y; box-sizing: border-box; }
+html, body {
+    padding: 0;
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text-color);
+    background-color: #f5f7fa !important;
+}
+
+h1,h2,h3,h4,h5,p{
+    margin-top:5px;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.ui-content2 {
+    border: var(--glass-border) !important;
+    margin: 15px 20px !important;
+    padding: 25px !important;
+    background: var(--surface-color) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: var(--border-radius) !important;
+    box-shadow: var(--box-shadow) !important;
+    transition: all 0.3s ease;
+}
+
+.ui-content2:hover {
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12) !important;
+    transform: translateY(-2px);
+}
+
 .corner{
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
     border-radius: 10px;
 }
-h1,h2,h3,h4,h5,p{
-    margin-top:5px;
-    margin-bottom: 10px;
-}
+
 .bg-img{
-        background-image:url('../img/bg.png');
-        background-repeat:no-repeat;
-        background-size:100% 150px;
-        -moz-background-size:100% 100%;
+    background-image:url('../img/bg.png');
+    background-repeat:no-repeat;
+    background-size: 100% 250px; 
+    background-position: top center;
 }
-html, body {
-    padding: 0;
-    margin: 0;
+
+/* JQM Overrides for modern look */
+.ui-btn-active, .ui-btn-active:visited, .ui-btn-active:hover, .ui-btn-active:active {
+    background: var(--primary-gradient) !important;
+    border-color: transparent !important;
+    text-shadow: none !important;
+    box-shadow: 0 4px 15px rgba(26, 115, 232, 0.3) !important;
+    border-radius: 12px !important;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px;
 }
+
+.ui-btn-active:active {
+    transform: scale(0.96);
+}
+
+.ui-header {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04) !important;
+    color: var(--text-color) !important;
+}
+
+.ui-title {
+    font-weight: 700 !important;
+    letter-spacing: 0.5px;
+    color: #1a1a1a !important;
+    text-shadow: none !important;
+}
+
+.ui-footer {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(15px) !important;
+    border-top: 1px solid rgba(0,0,0,0.05) !important;
+}
+
+.ui-navbar ul li a {
+    background-color: transparent !important;
+    border: none !important;
+    color: #a0aab5 !important;
+    text-shadow: none !important;
+    font-weight: 500 !important;
+}
+
+.ui-navbar ul li a.ui-btn-active {
+    color: var(--primary-color) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    font-weight: 700 !important;
+}
+
+.ui-input-text, .ui-input-search {
+    border-radius: 12px !important;
+    border: 1px solid rgba(0,0,0,0.08) !important;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.02) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    padding-left: 10px !important;
+    transition: border-color 0.3s;
+}
+
 .person-img{
     -moz-border-radius: 50%;
     -webkit-border-radius: 50%;
     border-radius:50%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
+#_msg_btn {
+    border-radius: 20px !important;
+    background: rgba(0,0,0,0.8) !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+    font-weight: 600 !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+}

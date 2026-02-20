@@ -33,7 +33,7 @@ public class Swagger2Config {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 //页面标题
-                .title("长安顺风车 - " + appName)
+                .title("同城顺风车 - " + appName)
                 //创建人
                 .contact(new Contact("Shawn", null, "wangshouwen@itcast.cn"))
                 //版本号
