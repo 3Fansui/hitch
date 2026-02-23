@@ -183,7 +183,7 @@ p {
     border: none !important;
     border-bottom: 2px solid rgba(255, 255, 255, 0.2) !important;
     border-radius: 8px 8px 0 0 !important;
-    color: white !important;
+    color: #333 !important;
     text-shadow: none !important;
     font-size: 16px !important;
     padding: 12px 15px !important;
@@ -196,7 +196,7 @@ p {
 }
 
 .ui-page-theme-a .glass-input {
-    color: white !important;
+    color: #333 !important;
 }
 
 .glass-input::-webkit-input-placeholder {

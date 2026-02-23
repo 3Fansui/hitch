@@ -13,6 +13,11 @@
 
     <script>
         $(function () {
+            var token = localStorage.getItem('SESSION_TOKEN_KEY');
+            if (token && token !== 'null' && token !== 'undefined') {
+                location.href = 'user/user.html';
+                return;
+            }
 
             // 登录
             $('#go').click(function () {
@@ -78,10 +83,10 @@
             <div class="glass-login-card">
                 <form id="loginForm">
                     <div style="margin-bottom: 25px;">
-                        <input name="username" id="u" class="glass-input" placeholder="请输入您的账号" autocomplete="off" />
+                        <input name="username" id="u" class="glass-input" autocomplete="off" />
                     </div>
                     <div style="margin-bottom: 35px;">
-                        <input name="password" id="p" type="password" class="glass-input" placeholder="请输入密码" />
+                        <input name="password" id="p" type="password" class="glass-input" />
                     </div>
                     <button type="button" class="ui-btn-active" id="go"
                         style="padding: 14px !important; font-size: 18px !important; border-radius: 50px !important;">开

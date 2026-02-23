@@ -110,7 +110,8 @@ $.ajax = function (opt) {
         error: function (XMLHttpRequest, textStatus, errorThrown) {
 
             if (XMLHttpRequest.status == 401) {
-                showMsg('登录信息验证失败');
+                localStorage.removeItem('SESSION_TOKEN_KEY');
+                showMsg('登录已失效，请重新登录');
                 toUrl('/web/login.html', 1000);
             } else if (XMLHttpRequest.status > 500) {
                 showMsg('服务器请求失败');
@@ -187,11 +188,7 @@ function getUser() {
                     //判断当前浏览器是否支持WebSocket
                     if ('WebSocket' in window) {
                         //截取浏览器地址栏host和端口
-                        var l = l = window.location.href;
-                        var r = new RegExp('http://(.+)?/web/.*');
-                        var h = l.match(r)[1];
-                        //拼接ws的地址，走nginx代理转发
-                        websocket = new WebSocket('ws://' + h + '/notice/ws/socket?SESSION_TOKEN_KEY=' + token);
+                        websocket = new WebSocket('ws://' + window.location.host + '/notice/ws/socket?SESSION_TOKEN_KEY=' + token);
                     } else {
                         alert('Not support websocket')
                     }
@@ -217,21 +214,9 @@ function getUser() {
                     }
 
                 } else {
-                    var isHome = location.href.indexOf('/user.html') !== -1;
-                    if (isHome) {
-                        $(function () {
-                            $('a, button, input').off('click tap').on('click tap', function (e) {
-                                showMsg('请先登录即可体验功能');
-                                setTimeout(function () { location.href = '../login.html'; }, 1500);
-                                e.preventDefault();
-                                e.stopPropagation();
-                                return false;
-                            });
-                        });
-                    } else {
-                        showMsg(data.message);
-                        toUrl('/web/login.html', 1000);
-                    }
+                    localStorage.removeItem('SESSION_TOKEN_KEY');
+                    showMsg('登录已失效，请重新登录');
+                    toUrl('/web/login.html', 1000);
                 }
 
             },

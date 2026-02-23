@@ -434,6 +434,10 @@ public class StrokeHandler {
             orderPO.setDistance(resultBO.getDistance().getValue());
             orderPO.setEstimatedTime(resultBO.getDuration().getValue());
             orderPO.setCost(valuation.calculation(orderPO.getDistance()/1000));
+        } else {
+            orderPO.setDistance(0);
+            orderPO.setEstimatedTime(0);
+            orderPO.setCost(valuation.calculation(0));
         }
         orderAPIService.add(orderPO);
     }

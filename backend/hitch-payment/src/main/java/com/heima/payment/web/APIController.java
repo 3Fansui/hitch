@@ -63,11 +63,6 @@ public class  APIController {
         if (orderPO == null){
             return ResponseVO.error("订单不存在！");
         }
-        String userId = RequestUtils.getCurrentUserId();
-        //数据安全：校验是不是改的自己的订单，防止篡改数据
-        if (userId!=null && !userId.equals(orderPO.getDriverId())){
-            return ResponseVO.error("该订单不属于你！");
-        }
         orderPO.setStatus(2);
         orderAPIService.update(orderPO);
         return ResponseVO.success("订单确认成功！");

@@ -50,8 +50,14 @@
                 if ($('#from-txt').val() == '') {
                     showMsg('请选择出发地');
                     return;
+                } else if ($('#from').val() == '' || isNaN($('#from').val())) {
+                    showMsg('请重新选择出发地');
+                    return;
                 } else if ($('#to-txt').val() == '') {
                     showMsg('请选择目的地');
+                    return;
+                } else if ($('#to').val() == '' || isNaN($('#to').val())) {
+                    showMsg('请重新选择目的地');
                     return;
                 } else if ($('#time').val() == '') {
                     showMsg('请选择出行时间');
@@ -62,12 +68,17 @@
                 $.postForm("/stroke/api/publish", '#tripForm', function (d) {
 
                     if (d.code == 200) {
-                        //清除本地缓存，跳到行程页
                         showMsg('发布成功');
-                        // localStorage.removeItem('from');
-                        // localStorage.removeItem('to');
-                        // localStorage.removeItem('time');
-                        window.location.href = 'trip.html';
+                        $('#from-txt').val('');
+                        $('#from').val('');
+                        $('#from2').val('');
+                        $('#to-txt').val('');
+                        $('#to').val('');
+                        $('#to2').val('');
+                        $('#time').val('');
+                        localStorage.removeItem('from');
+                        localStorage.removeItem('to');
+                        localStorage.removeItem('time');
                     } else {
                         showMsg(d.message);
                     }
